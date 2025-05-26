@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Courier Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f6fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 400px;
+            background: #fff;
+            margin: 50px auto;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #004080;
+        }
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .tabs button {
+            flex: 1;
+            padding: 10px;
+            background: #e7eef7;
+            border: none;
+            cursor: pointer;
+        }
+        .tabs button.active {
+            background: #004080;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+        }
+        button {
+            background: #004080;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .logout {
+            background: #ccc;
+            margin-top: 10px;
+        }
+        .flash {
+            color: red;
+            text-align: center;
+            font-size: 0.9em;
+        }
+    </style>
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById(tabId + '-btn').classList.add('active');
+        }
+        window.onload = function() {
+            showTab('accept');
+        }
+    </script>
+
+
+</head>
+<body>
+    <div class="container">
+        <h2>Courier Panel</h2>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="tabs">
+            <button id="accept-btn" onclick="showTab('accept')">Accept Package</button>
+            <button id="deliver-btn" onclick="showTab('deliver')">Deliver Package</button>
+        </div>
+
+        <!-- Accept Form -->
+        <div id="accept" class="tab-content">
+            <form method="POST">
+                <input type="hidden" name="action" value="accept">
+                <input type="text" name="sender_id" placeholder="Sender User ID" required>
+                <input type="text" name="track_id" placeholder="Tracking Number (16 digits)" required>
+                <button type="submit">Accept</button>
+            </form>
+        </div>
+<!-- Deliver Form -->
+        <div id="deliver" class="tab-content">
+            <form method="POST">
+                <input type="hidden" name="action" value="deliver">
+                <input type="text" name="sender_id" placeholder="Sender User ID" required>
+                <input type="text" name="track_id" placeholder="Tracking Number (16 digits)" required>
+                <button type="submit">Deliver</button>
+            </form>
+        </div>
+
+        <form action="{{ url_for('home') }}">
+            <button type="submit" class="logout">Logout</button>
+        </form>
+    </div>
+</body>
+</html>
