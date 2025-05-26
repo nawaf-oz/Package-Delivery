@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KSU Logistics - dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .logo {
+            padding: 20px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #004f97;
+            flex-grow: 1;
+            box-sizing: border-box;
+        }
+        h2 {
+            text-align: center;
+            color: #004f97;
+        }
+        form input, form select, form button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #004f97;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #003870;
+        }
+        .msg {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+        }
+        .section {
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            table-layout: auto;
+            word-break: break-word;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: center;
+            white-space: normal;
+        }
+        .logout {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .logout a {
+            text-decoration: none;
+            color: #004f97;
+        }
+        .footer {
+            background-color: #0082c8;
+            padding: 10px;
+            text-align: center;
+        }
+        .footer img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">
+        <img src="{{ url_for('static', filename='ksu_logo.png') }}" alt="KSU Logo" style="width: 150px;">
+    </div>
+
+    <div class="container">
+        <h2>Welcome {{ role }} {{ user_id }}</h2>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="msg">
+              {% for msg in messages %}
+                <p>{{ msg }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <!-- Drop a Package -->
+        <div class="section">
+            <h3>Drop a Package</h3>
+            <form method="POST">
+                <select name="office" required>
+                    <option value="">Select Logistics Office</option>
+                    {% for office in offices %}
+                        <option value="{{ office }}">{{ office }}</option>
+                    {% endfor %}
+                </select>
+                <input name="dimensions" placeholder="Dimensions (L x W x H)" required>
+                <input name="weight" placeholder="Weight (kg)" required>
+                <input name="receiver" placeholder="Receiver User ID" required>
+                <button type="submit">Confirm Drop</button>
+            </form>
+        </div>
+
+        <!-- My Packages -->
+        <div class="section">
+            <h3>My Packages</h3>
+            <table>
+                <tr>
+                    <th>Tracking #</th>
+                    <th>Receiver</th>
+                    <th>Office</th>
+                    <th>Dimensions</th>
+                    <th>Weight</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+                {% for p in packages %}
+                <tr>
+                    <td>{{ p[6] }}</td>
+                    <td>{{ p[2] }}</td>
+                    <td>{{ p[3] }}</td>
+                    <td>{{ p[4] }}</td>
+                    <td>{{ p[5] }}</td>
+                    <td>{{ p[8] }}</td>
+                    <td>{{ p[7] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="logout">
+            <a href="{{ url_for('home') }}">Logout</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <img src="{{ url_for('static', filename='ksu_footer.png') }}" alt="KSU Footer">
+    </div>
+
+</body>
+</html>
